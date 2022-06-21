@@ -1,0 +1,55 @@
+{
+    "clinic": [
+        {
+            "address" : "4601 N Congress Ave Ste 107 West Palm Beach FL",
+            "postcode": "33407",
+            "phone": 5615134571,
+            "cli_name": "Amicus Medical"
+        }
+    ],
+    "doctor": [
+        {
+            "dlname": "Perry",
+            "dfname": "Noah", 
+            "speciality": "GP",
+            "cost": 35.50
+        }
+    ],
+    "patient": [
+        {
+            "planame": "Van",
+            "pfname": "Patrick",
+            "bdate": "1993-10-25"
+        }
+    ],
+    "visit": [
+        { 
+            "vdate": "2022-02-16 08:30:00",
+            "complaints": "Depression",
+            "status": "Attended",
+            "pid": 2014,
+            "DocId": 1014 
+        } 
+    ],
+    "prescription": [
+        {
+            "prmedicine": "SWISSE Ultiboost Mood 50 Tablets",
+            "prusage": "One in the morning and one before bed",
+            "vid": 3014,
+            "pid": 2014
+        }
+    ],
+    "clinic_doctor": [
+        {
+            "DocId": 1014, 
+            "ClId": 101,
+            "shift":  "Monday to Friday"
+        }
+    ],
+    "clinic_patient": [
+        {
+            "pid": 2014, 
+            "ClId": 101
+        }
+    ]
+}
