@@ -1,5 +1,3 @@
-from ctypes import addressof
-
 
 def get_clinic_attr():
  
@@ -27,7 +25,7 @@ def get_doctor_attr():
 def get_patient_attr():
     planame= str(input("Enter last name: ")) 
     pfname= str(input("Enter first name: ")) 
-    bdate= str(input("Enter date of birth: "))
+    bdate= str(input("Enter date of birth ('YYYY-MM-DD'): "))
    
 
     sql = """INSERT INTO patient (planame, pfname, bdate) VALUES (%s, %s, %s)"""
@@ -36,8 +34,8 @@ def get_patient_attr():
     return list_pat
 
 def get_visit_attr():
-    vdate= str(input("Enter visit date: ")) 
-    complaints= str(input("Enter complaint: ")) 
+    vdate= str(input("Enter visit date and time ('YYYY-MM-DD HH:MM:SS'): ")) 
+    complaints= str(input("Enter Visit Reason: ")) 
     status= str(input("Enter status: "))
     pid= int(input("Enter the patient id: "))
     DocId = int(input("Enter the doctor id: "))
@@ -54,7 +52,7 @@ def get_prescription_attr():
     pid = int(input("Enter the patient id: "))
 
     sql = """INSERT INTO prescription (prmedicine, prusage, vid, pid) VALUES (%s, %s, %s, %s); """
-    list_pre=[sql[(prmedicine, prusage, vid, pid)]]
+    list_pre=[sql, [(prmedicine, prusage, vid, pid)]]
     return list_pre   
 
 def get_clinic_doctor_attr():
@@ -64,7 +62,7 @@ def get_clinic_doctor_attr():
     shift = str(input("Enter doctor shift: "))
     
     sql = """INSERT INTO clinic_doctor (DocId, ClId, shift)  VALUES (%s, %s, %s);"""
-    list_doc_clic = [sql [(DocId, ClId, shift)]]
+    list_doc_clic = [sql, [(DocId, ClId, shift)]]
     return list_doc_clic
 
 def get_clinic_patient_attr():
@@ -73,32 +71,30 @@ def get_clinic_patient_attr():
     ClId = int(input("Enter the clinic id: "))
        
     sql = """INSERT INTO clinic_patient (pid, ClId) VALUES (%s, %s);"""
-    list_cli_pat =[sql [(pid, ClId)]]
+    list_cli_pat =[sql, [(pid, ClId)]]
     return list_cli_pat
 
 
-def check_table_name(table_name):
-    if table_name == "clinic":
-        result = get_clinic_attr()
-        return result
-    elif table_name == "doctor":
-        result = get_doctor_attr()
-        return result
-    elif table_name=="patient":
-        result = get_patient_attr()
-        return result
-    elif table_name == "visit":
-        result = get_visit_attr()
-        return result
-    elif table_name == "prescription":
-        result = get_prescription_attr()
-        return result
-    elif table_name == "clinic_doctor":
-        result = get_clinic_doctor_attr()
-        return result
-    elif table_name == "clinic_patient":
-        result = get_clinic_patient_attr()
-        return result
+def resch_and_cancel(connect, connection):
     
-def update_clinic():
-    address: str
+    list_id = []
+    lname = str(input("Enter Patient Last name: "))
+    fname = str(input("Enter Patient First name: "))
+    sql="""SELECT pid FROM patient
+            WHERE planame = '%s' and pfname = '%s';""" %(lname,fname)
+    results = connect.read_query(connection, sql)
+    #Obtain patient id from the query
+    for result in results:
+        pid = int(result[0])
+    list_id.append(pid)
+    dlname = str(input("Enter Doctor Last name: "))
+    dfname = str(input("Enter Doctor First name: "))
+    sqldoc="""SELECT docid FROM doctor
+                 WHERE dlname = '%s' and dfname = '%s'; """ %(dlname,dfname)
+    docresults = connect.read_query(connection, sqldoc)
+    #Obtain patient id from the query
+    for result in docresults:
+        docid = int(result[0])
+    list_id.append(docid)
+
+    return list_id    

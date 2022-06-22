@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 sys.path
 import json
 import mysql.connector
@@ -21,30 +22,21 @@ class Connect_to_dbImp(Connect_to_db):
             database=db
             )
             print("MySQL Database connection successful")
+            sleep(1)
         except Error as err:
             print(f"Error: '{err}'")
 
         return connection
-
-    def create_database(connection, query):
-        pass
-    # Create & Insert data SQL queries
-    def execute_query(connection, query):
-        cursor = connection.cursor()
-        try:
-            cursor.execute(query)
-            connection.commit()
-            print("Query successful")
-        except Error as err:
-            print(f"Error: '{err}'")
-
+    
     #insert data from command_line 
-    def execute_list_query(connection, sql, val):
+    def new_pat_app(connection, sql, val):
         cursor = connection.cursor()
         try:
             cursor.executemany(sql, val)
             connection.commit()
             print("Query successful")
+            print()
+            sleep(1)
         except Error as err:
             print(f"Error: '{err}'")
 
@@ -56,7 +48,21 @@ class Connect_to_dbImp(Connect_to_db):
             cursor.execute(query)
             result = cursor.fetchall()
             print("returning query")
+            print()
+            sleep(1)
             return result
+        except Error as err:
+            print(f"Error: '{err}'")
+
+    # Update data SQL queries
+    def update_data(connection, query):
+        cursor = connection.cursor()
+        try:
+            cursor.execute(query)
+            connection.commit()
+            print("Query successful")
+            print()
+            sleep(2)
         except Error as err:
             print(f"Error: '{err}'")
 
@@ -66,7 +72,7 @@ class Connect_to_dbImp(Connect_to_db):
         file = open(jf)
         data = json.load(file)
         print("processing data...")
-        
+        sleep(1)
         for key, value in data.items():
             listTup = []
             lh: list = value
@@ -81,7 +87,7 @@ class Connect_to_dbImp(Connect_to_db):
                     INSERT INTO clinic (address, postcode, phone, cli_name)  
                     VALUES (%s, %s, %s, %s);
                 """
-                Connect_to_dbImp.execute_list_query(connection, sql, listTup)
+                Connect_to_dbImp.new_pat_app(connection, sql, listTup)
             elif key == "doctor":
                 for item in lh:
                     dlname = item.get("dlname")
@@ -93,7 +99,7 @@ class Connect_to_dbImp(Connect_to_db):
                     INSERT INTO doctor (dlname, dfname, speciality, cost)  
                     VALUES (%s, %s, %s, %s);
                 """
-                Connect_to_dbImp.execute_list_query(connection, sql, listTup)
+                Connect_to_dbImp.new_pat_app(connection, sql, listTup)
             elif key == "patient":
                 for item in lh:
                     planame = item.get("planame")
@@ -104,7 +110,7 @@ class Connect_to_dbImp(Connect_to_db):
                     INSERT INTO patient (planame, pfname, bdate)  
                     VALUES (%s, %s, %s);
                 """
-                Connect_to_dbImp.execute_list_query(connection, sql, listTup)
+                Connect_to_dbImp.new_pat_app(connection, sql, listTup)
             elif key == "visit":
                 for item in lh:
                     vdate = item.get("vdate")
@@ -117,7 +123,7 @@ class Connect_to_dbImp(Connect_to_db):
                     INSERT INTO visit (vdate, complaints, status, pid, DocId)  
                     VALUES (%s, %s, %s, %s, %s);
                 """
-                Connect_to_dbImp.execute_list_query(connection, sql, listTup)
+                Connect_to_dbImp.new_pat_app(connection, sql, listTup)
             elif key == "prescription":
                 for item in lh:
                     prmedicine = item.get("prmedicine")
@@ -129,7 +135,7 @@ class Connect_to_dbImp(Connect_to_db):
                     INSERT INTO prescription (prmedicine, prusage, vid, pid)  
                     VALUES (%s, %s, %s, %s);
                 """
-                Connect_to_dbImp.execute_list_query(connection, sql, listTup) 
+                Connect_to_dbImp.new_pat_app(connection, sql, listTup) 
             elif key == "clinic_doctor":
                 for item in lh:
                     DocId = item.get("DocId")
@@ -140,7 +146,7 @@ class Connect_to_dbImp(Connect_to_db):
                     INSERT INTO clinic_doctor (DocId, ClId, shift)  
                     VALUES (%s, %s, %s);
                 """
-                Connect_to_dbImp.execute_list_query(connection, sql, listTup)
+                Connect_to_dbImp.new_pat_app(connection, sql, listTup)
             elif key == "clinic_patient":
                 for item in lh:
                     pid = item.get("pid")
@@ -150,6 +156,6 @@ class Connect_to_dbImp(Connect_to_db):
                     INSERT INTO clinic_patient (pid, ClId)  
                     VALUES (%s, %s);
                 """
-                Connect_to_dbImp.execute_list_query(connection, sql, listTup)
+                Connect_to_dbImp.new_pat_app(connection, sql, listTup)
 
  
