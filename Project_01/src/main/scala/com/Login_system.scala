@@ -3,7 +3,7 @@ package com
 import java.sql.{Connection, DriverManager, Statement}
 import java.util.Scanner
 import scala.io.Source
-
+/*This class uses Mysql connection to validate users*/
 class Login_system{
   val pass: String = Source.fromFile("C:\\input_mall\\password.txt").getLines().mkString
 
@@ -21,8 +21,12 @@ class Login_system{
   def login_system(): Unit = {
 
     var authen = false
+
+    println()
+    println("LOGIN SYSTEM, PLEASE ENTER YOUR USERNAME, PASSWORD AND USER TYPE")
     try{
       do{
+        println()
         println("Enter Username: ")
         val username = scanner.nextLine()
         println("Enter Password: ")
@@ -35,7 +39,6 @@ class Login_system{
              | '$username' and p4ssword = '$pword' and usertype = '$usertype'""".stripMargin)
 
         if(rs1.next()){
-          println(s"Welcome Back ${rs1.getString("username").toUpperCase}")
           authen = true
           userMenu(username, pword)
         }else{
@@ -52,25 +55,53 @@ class Login_system{
   }
 
   def userMenu(username: String, pword: String): Unit = {
-    printMenu()
+    var newusername = ""
+    var upuserName = 0
+    var newpassword = ""
+    var updatepass = 0
+    printMenu(username)
     try{
       Iterator.continually(scala.io.StdIn.readLine("Select Option: "))
         .takeWhile(_ != "3")
         .foreach {
           case "1" => println("Enter new username: ")
-            val newusername = scanner.nextLine()
-            val upuserName = statement.executeUpdate(s"""UPDATE $dbtable SET username = '$newusername'
-                                                        | WHERE username = '$username' and p4ssword = '$pword'""".stripMargin)
-            if(upuserName == 1) println("Username has been updated successfully")
-            printMenu()
+            if(updatepass==1) {
+              newusername = scanner.nextLine()
+              upuserName = statement.executeUpdate(
+                s"""UPDATE $dbtable SET username = '$newusername'
+                   | WHERE username = '$username' and p4ssword = '$newpassword'""".stripMargin)
+            }else{
+              newusername = scanner.nextLine()
+              upuserName = statement.executeUpdate(
+                s"""UPDATE $dbtable SET username = '$newusername'
+                   | WHERE username = '$username' and p4ssword = '$pword'""".stripMargin)
+            }
+            if(upuserName == 1){
+              println("Username has been updated successfully")
+            } else{
+              println("Update was not successfully")
+            }
+            printMenu(username)
           case "2" => println("Enter new password: ")
-            val newpassword = scanner.nextLine()
-            val updatepass = statement.executeUpdate(s"""UPDATE $dbtable SET p4ssword = '$newpassword'
-                                                        | WHERE username = '$username' and p4ssword = '$pword'""".stripMargin)
-            if(updatepass == 1) println(s"Password for user $username has been updated successfully")
-            printMenu()
+            if(upuserName == 1) {
+              newpassword = scanner.nextLine()
+              updatepass = statement.executeUpdate(
+                s"""UPDATE $dbtable SET p4ssword = '$newpassword'
+                   | WHERE username = '$newusername' and p4ssword = '$pword'""".stripMargin)
+            }else {
+              newpassword = scanner.nextLine()
+              updatepass = statement.executeUpdate(
+                s"""UPDATE $dbtable SET p4ssword = '$newpassword'
+                   | WHERE username = '$username' and p4ssword = '$pword'""".stripMargin)
+            }
+            if(updatepass == 1) {
+              println("Password has been updated successfully")
+            }else{
+              println("Update was not successfull")
+            }
+            printMenu(username)
           case _ => println("Incorrect option, Please try again")
-            printMenu()
+            printMenu(username)
         }
       }
     catch
@@ -78,12 +109,12 @@ class Login_system{
       case e: Exception => e.printStackTrace()
     }
   }
-  def printMenu(): Unit ={
+  def printMenu(username: String): Unit ={
     println()
-    println("WELCOME TO USER MENU")
+    println(s"WELCOME ${username.toUpperCase()} TO USER MENU")
     println()
     println("1. Update Username ")
     println("2. Update Password ")
-    println("3. Main Menu")
+    println("3. Data Analysis")
   }
 }
